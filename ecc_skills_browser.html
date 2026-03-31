@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Browse 136+ skills for Everything Claude Code — AI agents, backend, frontend, testing, and more.">
+<meta name="theme-color" content="#0a0c10">
+<title>ECC Skills Browser — Everything Claude Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ═══════════════════════════════════════════
+     Design Tokens
+     ═══════════════════════════════════════════ */
+  :root {
+    --bg: #06080c;
+    --surface: #0e1117;
+    --surface2: #151921;
+    --surface3: #1c212b;
+    --border: #1e2530;
+    --border-hover: #2a3140;
+    --accent: #00d9ff;
+    --accent-glow: rgba(0, 217, 255, 0.15);
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --text: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --muted: #64748b;
+    --danger: #ef4444;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 6px;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Cairo', 'Inter', sans-serif;
+    --sans-en: 'Inter', 'Cairo', sans-serif;
+    --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+    --sidebar-w: 260px;
+    --detail-w: 460px;
+  }
+
+  /* ═══════════════════════════════════════════
+     Reset & Base
+     ═══════════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body[dir="ltr"] { font-family: var(--sans-en); }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* ═══════════════════════════════════════════
+     Header
+     ═══════════════════════════════════════════ */
+  header {
+    background: linear-gradient(180deg, rgba(14,17,23,0.97) 0%, rgba(6,8,12,0.97) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-size: 14px; font-weight: 800; color: #fff;
+    font-family: var(--mono);
+    box-shadow: 0 0 24px rgba(0,217,255,0.25);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-text h1 { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -0.3px; line-height: 1.2; }
+  .logo-text span { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+
+  .search-box {
+    flex: 1; max-width: 380px;
+    position: relative;
+    margin: 0 auto 0 16px;
+  }
+  [dir="ltr"] .search-box { margin: 0 16px 0 auto; }
+
+  .search-box input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 14px 9px 38px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: var(--transition);
+  }
+  [dir="rtl"] .search-box input { padding: 9px 38px 9px 14px; }
+
+  .search-box input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .search-box input::placeholder { color: var(--muted); }
+
+  .search-box svg {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  [dir="rtl"] .search-box svg { left: auto; right: 12px; }
+
+  .header-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .stat-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 5px 12px;
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .stat-chip strong { color: var(--accent); font-weight: 600; }
+
+  .lang-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--mono);
+    transition: var(--transition);
+  }
+  .lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ═══════════════════════════════════════════
+     Layout
+     ═══════════════════════════════════════════ */
+  .app { display: flex; height: calc(100vh - 64px); }
+
+  /* ═══════════════════════════════════════════
+     Sidebar
+     ═══════════════════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--surface);
+    border-inline-end: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 14px 0;
+    flex-shrink: 0;
+  }
+
+  .sidebar-label {
+    font-size: 10px; font-family: var(--mono);
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 18px 10px;
+  }
+
+  .cat-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 18px;
+    cursor: pointer;
+    border: none; background: transparent;
+    color: var(--text-secondary);
+    width: 100%; text-align: inherit;
+    font-family: inherit; font-size: 13px;
+    transition: var(--transition);
+    border-inline-start: 3px solid transparent;
+    position: relative;
+  }
+
+  .cat-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .cat-btn.active {
+    background: var(--surface2);
+    color: var(--accent);
+    border-inline-start-color: var(--accent);
+  }
+
+  .cat-icon { font-size: 15px; flex-shrink: 0; line-height: 1; }
+
+  .cat-count {
+    margin-inline-start: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--muted);
+    min-width: 24px; text-align: center;
+  }
+
+  .cat-btn.active .cat-count {
+    border-color: rgba(0,217,255,0.3);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+
+  /* ═══════════════════════════════════════════
+     Main Content
+     ═══════════════════════════════════════════ */
+  .main { flex: 1; overflow-y: auto; padding: 20px 24px; }
+
+  .results-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    font-size: 12px; color: var(--muted); font-family: var(--mono);
+  }
+  .results-bar strong { color: var(--accent); }
+
+  .filter-chip {
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,217,255,0.25);
+    border-radius: var(--radius-xs);
+    padding: 2px 10px;
+    font-size: 11px; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  .sort-btn {
+    margin-inline-start: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 4px 10px;
+    font-size: 11px; font-family: var(--mono);
+    color: var(--muted); cursor: pointer;
+    transition: var(--transition);
+  }
+  .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ═══════════════════════════════════════════
+     Skills Grid
+     ═══════════════════════════════════════════ */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  .skill-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-card::after {
+    content: '';
+    position: absolute;
+    top: 0; inset-inline-start: 0;
+    width: 50px; height: 2px;
+    background: var(--card-accent, var(--accent));
+    border-radius: 0 0 2px 0;
+    transition: width var(--transition);
+  }
+
+  .skill-card:hover {
+    border-color: var(--card-accent, var(--accent));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    background: var(--surface2);
+  }
+  .skill-card:hover::after { width: 100%; }
+
+  .card-head { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+
+  .card-icon {
+    width: 34px; height: 34px; border-radius: var(--radius-sm);
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,217,255,0.15);
+    display: grid; place-items: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+
+  .card-title { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.35; }
+  .card-id { font-size: 10px; font-family: var(--mono); color: var(--muted); margin-top: 1px; }
+
+  .card-desc {
+    font-size: 12.5px; color: var(--text-secondary); line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-foot {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 10px;
+  }
+
+  .tag {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 2px 7px;
+    font-size: 10px; font-family: var(--mono);
+    color: var(--muted);
+    background: var(--surface2);
+  }
+
+  .tag-cat { border-color: var(--card-accent, var(--border)); color: var(--card-accent, var(--muted)); }
+
+  .lines-label {
+    margin-inline-start: auto;
+    font-size: 10px; font-family: var(--mono);
+    color: var(--border-hover);
+  }
+
+  /* ═══════════════════════════════════════════
+     Detail Panel
+     ═══════════════════════════════════════════ */
+  .detail-panel {
+    width: var(--detail-w);
+    background: var(--surface);
+    border-inline-start: 1px solid var(--border);
+    display: none;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+  .detail-panel.open { display: flex; }
+
+  .detail-head {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+
+  .detail-icon {
+    width: 48px; height: 48px; border-radius: var(--radius);
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,217,255,0.15);
+    display: grid; place-items: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  .detail-title h2 { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.3; }
+  .detail-title code {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--accent); background: var(--accent-glow);
+    padding: 2px 8px; border-radius: 4px;
+    display: inline-block; margin-top: 4px;
+  }
+
+  .close-detail {
+    margin-inline-start: auto; margin-top: -2px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    padding: 6px 10px;
+    cursor: pointer; font-size: 11px;
+    font-family: inherit;
+    transition: var(--transition);
+  }
+  .close-detail:hover { border-color: var(--danger); color: var(--danger); }
+
+  .detail-body { flex: 1; overflow-y: auto; padding: 18px 22px; }
+
+  .detail-section { margin-bottom: 18px; }
+
+  .section-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--muted); font-family: var(--mono);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .detail-desc { font-size: 13.5px; color: var(--text); line-height: 1.7; }
+
+  .when-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-inline-start: 3px solid var(--accent3);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 12.5px; color: var(--text); line-height: 1.65;
+    white-space: pre-wrap;
+  }
+
+  .chips-row { display: flex; flex-wrap: wrap; gap: 5px; }
+
+  .chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 4px 10px;
+    font-size: 11px; font-family: var(--mono);
+    color: var(--text-secondary);
+  }
+
+  .install-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-family: var(--mono);
+    font-size: 12px; color: var(--accent3);
+    position: relative;
+    direction: ltr; text-align: left;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--muted);
+    padding: 3px 9px;
+    font-size: 10px; font-family: var(--mono);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .meta-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+
+  .meta-label { font-size: 10px; font-family: var(--mono); color: var(--muted); margin-bottom: 3px; }
+  .meta-value { font-size: 14px; font-weight: 700; color: #fff; }
+
+  /* ═══════════════════════════════════════════
+     Empty State
+     ═══════════════════════════════════════════ */
+  .empty-state {
+    text-align: center; padding: 80px 20px;
+    color: var(--muted); grid-column: 1 / -1;
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; display: block; opacity: 0.5; }
+  .empty-state p { font-size: 14px; }
+
+  /* ═══════════════════════════════════════════
+     Animations
+     ═══════════════════════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .skill-card { animation: fadeUp 0.25s ease both; }
+
+  /* ═══════════════════════════════════════════
+     Responsive
+     ═══════════════════════════════════════════ */
+  @media (max-width: 1200px) {
+    .detail-panel { --detail-w: 380px; }
+  }
+
+  @media (max-width: 960px) {
+    .sidebar { display: none; }
+    .detail-panel {
+      position: fixed; inset: 64px 0 0;
+      width: 100%; z-index: 90;
+      --detail-w: 100%;
+    }
+    .stat-chip:not(:first-child) { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    header { padding: 0 14px; gap: 10px; }
+    .logo-text h1 { font-size: 14px; }
+    .logo-text span { display: none; }
+    .main { padding: 14px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .stat-chip { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ Header ═══════════ -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">ECC</div>
+    <div class="logo-text">
+      <h1>Skills Browser</h1>
+      <span>Everything Claude Code</span>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="ابحث في المهارات..." oninput="filterSkills()">
+  </div>
+
+  <div class="header-actions">
+    <div class="stat-chip"><strong id="totalCount">0</strong> <span data-i18n="skills">مهارة</span></div>
+    <div class="stat-chip"><strong id="visibleCount">0</strong> <span data-i18n="visible">ظاهر</span></div>
+    <button class="lang-btn" id="langToggle" onclick="toggleLang()" title="Switch language">EN / عر</button>
+  </div>
+</header>
+
+<!-- ═══════════ App Layout ═══════════ -->
+<div class="app">
+  <nav class="sidebar" id="sidebar"></nav>
+
+  <main class="main" id="main">
+    <div class="results-bar" id="resultsBar">
+      <strong id="resultCount">0</strong> <span data-i18n="results">نتيجة</span>
+      <span id="activeFilter"></span>
+      <button class="sort-btn" id="sortBtn" onclick="toggleSort()">A→Z</button>
+    </div>
+    <div class="skills-grid" id="skillsGrid"></div>
+  </main>
+
+  <aside class="detail-panel" id="detailPanel">
+    <div class="detail-head" id="detailHead"></div>
+    <div class="detail-body" id="detailBody"></div>
+  </aside>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════
+   Data
+   ═══════════════════════════════════════════ */
+const SKILLS=[{"id":"agent-eval","title":"Agent Eval Skill","desc":"Head-to-head comparison of coding agents (Claude Code, Aider, Codex, etc.) on custom tasks with pass rate, cost, time, and consistency metrics","when":"- Comparing coding agents (Claude Code, Aider, Codex, etc.) on your own codebase\n- Measuring agent performance before adopting a new tool or model\n- Running regression checks when an agent updates its","cat":"ai_agents","lines":145,"sections":["When to Activate","Installation","Core Concept","Task Suite Design","Harness Architecture","Result Schema","Metrics Dashboard"]},{"id":"agent-harness-construction","title":"Agent Harness Construction","desc":"Design and optimize AI agent action spaces, tool definitions, and observation formatting for higher completion rates.","when":"","cat":"ai_agents","lines":73,"sections":["When to Activate","Action Space Design","Tool Definition Patterns","Observation Formatting","Agent Harness Quality Checklist"]},{"id":"agent-payment-x402","title":"Agent Payment Execution (x402)","desc":"Add x402 payment execution to AI agents — per-task budgets, spending controls, and non-custodial wallets via MCP tools.","when":"Use when: your agent needs to pay for an API call, purchase a service, settle with another agent, enforce per-task spending limits, or manage a non-custodial wallet.","cat":"ai_agents","lines":178,"sections":["When to Activate","Installation","Core Concepts","MCP Tool Reference","Wallet Management","Budget Control Patterns"]},{"id":"agentic-engineering","title":"Agentic Engineering","desc":"Operate as an agentic engineer using eval-first execution, decomposition, and cost-aware model routing.","when":"","cat":"ai_agents","lines":63,"sections":["When to Activate","Core Operating Principles","Execution Flow","Task Decomposition","Model Routing"]},{"id":"ai-first-engineering","title":"AI-First Engineering","desc":"Engineering operating model for teams where AI agents generate a large share of implementation output.","when":"","cat":"ai_agents","lines":51,"sections":["When to Activate","Core Principles","Team Structure","Quality Gates","Deployment"]},{"id":"ai-regression-testing","title":"AI Regression Testing","desc":"Regression testing strategies for AI-assisted development. Sandbox-mode API testing, automated bug-check workflows, and patterns to catch AI blind spots.","when":"- AI agent has modified API routes or backend logic\n- A bug was found and fixed — need to prevent re-introduction\n- Project has a sandbox/mock mode for DB-free testing","cat":"ai_agents","lines":385,"sections":["When to Activate","Core Strategy: Sandbox-Mode Testing","The Bug-Check Workflow","Test Organization","Test Patterns"]},{"id":"android-clean-architecture","title":"Android Clean Architecture","desc":"Clean Architecture patterns for Android and Kotlin Multiplatform — module structure, dependency rules, UseCases, Repositories, and data layer patterns.","when":"- Structuring Android or KMP project modules\n- Implementing UseCases, Repositories, or DataSources\n- Designing data flow between layers","cat":"android","lines":339,"sections":["When to Activate","Module Structure","Domain Layer","Data Layer","Presentation Layer"]},{"id":"api-design","title":"API Design Patterns","desc":"REST API design patterns including resource naming, status codes, pagination, filtering, error responses, versioning, and rate limiting.","when":"- Designing new API endpoints\n- Reviewing existing API contracts\n- Adding pagination, filtering, or sorting","cat":"backend","lines":523,"sections":["When to Activate","Resource Naming","HTTP Methods and Status Codes","Request and Response Design","Pagination and Filtering"]},{"id":"architecture-decision-records","title":"Architecture Decision Records","desc":"Capture architectural decisions as structured ADRs. Auto-detects decision moments, records context, alternatives considered, and rationale.","when":"- User explicitly says \"let's record this decision\" or \"ADR this\"\n- User chooses between significant alternatives\n- User asks \"why did we choose X?\"","cat":"tools","lines":179,"sections":["When to Activate","What is an ADR?","ADR Format","Auto-Detection Triggers","ADR Lifecycle"]},{"id":"article-writing","title":"Article Writing","desc":"Write articles, guides, blog posts, tutorials, and other long-form content in a distinctive voice derived from supplied examples.","when":"- Drafting blog posts, essays, guides, tutorials, or newsletter issues\n- Turning notes or research into polished articles\n- Matching an existing brand voice","cat":"content","lines":85,"sections":["When to Activate","Voice Extraction Process","Article Structure","Quality Standards"]},{"id":"autonomous-loops","title":"Autonomous Agent Loops","desc":"Patterns and architectures for autonomous Claude Code loops — from simple sequential pipelines to RFC-driven multi-agent DAG systems.","when":"","cat":"ai_agents","lines":100,"sections":["When to Activate","Loop Patterns","Pipeline Architecture","Quality Gates","Error Recovery"]},{"id":"backend-patterns","title":"Backend Development Patterns","desc":"Backend architecture patterns, API design, database optimization, and server-side best practices for Node.js, Express, and Next.js API routes.","when":"- Building backend services or APIs\n- Optimizing database queries\n- Implementing server-side authentication","cat":"backend","lines":494,"sections":["When to Activate","Project Structure","API Design","Database Patterns","Authentication and Authorization"]},{"id":"benchmark","title":"Benchmark","desc":"Measure performance baselines, detect regressions before/after PRs, and compare stack alternatives.","when":"Use this skill to measure performance baselines, detect regressions before/after PRs, and compare stack alternatives.","cat":"testing","lines":89,"sections":["When to Activate","Benchmark Types","Baseline Measurement","Regression Detection","Stack Comparison"]},{"id":"blueprint","title":"Blueprint","desc":"","when":"","cat":"other","lines":7,"sections":[]},{"id":"browser-qa","title":"Browser QA Automation","desc":"Automate visual testing and UI interaction verification using browser automation after deploying features.","when":"Use this skill to automate visual testing and UI interaction verification using browser automation after deploying features.","cat":"frontend","lines":67,"sections":["When to Activate","Tool Selection","Visual Testing","Interaction Testing","CI Integration"]},{"id":"bun-runtime","title":"Bun Runtime","desc":"Bun as runtime, package manager, bundler, and test runner. When to choose Bun vs Node, migration notes, and Vercel support.","when":"- Starting a new TypeScript/JavaScript project\n- Migrating a Node.js project to Bun\n- Replacing multiple tools with Bun's built-ins","cat":"frontend","lines":82,"sections":["When to Activate","Bun vs Node Decision","Migration from Node"]},{"id":"canary-watch","title":"Canary Watch","desc":"Monitor a deployed URL for regressions after deploys, merges, or dependency upgrades.","when":"Use this skill to monitor a deployed URL for regressions after deploys, merges, or dependency upgrades.","cat":"testing","lines":55,"sections":["When to Activate","Monitoring Strategy","Health Checks","Alert Configuration"]},{"id":"carrier-relationship-management","title":"Carrier Relationship Management","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"ck","title":"CK — Persistent Project Memory","desc":"Persistent per-project memory for Claude Code. Auto-loads project context on session start, tracks sessions with git activity.","when":"","cat":"tools","lines":88,"sections":["When to Activate","Installation","Session Hooks","Memory Structure","Commands"]},{"id":"claude-api","title":"Claude API Patterns","desc":"Anthropic Claude API patterns for Python and TypeScript. Covers Messages API, streaming, tool use, vision, extended thinking, batches, and prompt caching.","when":"- Building applications with the Claude API\n- Implementing streaming responses\n- Adding tool use / function calling","cat":"ai_agents","lines":341,"sections":["When to Activate","Messages API","Streaming","Tool Use","Vision and Documents"]},{"id":"claude-devfleet","title":"Claude DevFleet","desc":"Orchestrate multi-agent coding tasks via Claude DevFleet — plan, dispatch parallel agents in isolated worktrees, monitor, and read reports.","when":"","cat":"ai_agents","lines":92,"sections":["When to Activate","Fleet Architecture","Worktree Management","Agent Coordination","Progress Monitoring"]},{"id":"click-path-audit","title":"Click-Path Audit","desc":"Trace every user-facing button/touchpoint through its full state change sequence to find state-cancellation bugs.","when":"Use when: systematic debugging found no bugs but users report broken buttons, or after any major refactor touching shared state stores.","cat":"testing","lines":117,"sections":["When to Activate","Audit Process","State Tracing","Common Patterns","Report Format"]},{"id":"clickhouse-io","title":"ClickHouse I/O Patterns","desc":"ClickHouse database patterns, query optimization, analytics, and data engineering best practices for analytical workloads.","when":"- Writing ClickHouse queries\n- Designing table schemas for analytical workloads\n- Optimizing slow queries","cat":"backend","lines":380,"sections":["When to Activate","Table Design","Query Optimization","Data Ingestion","Aggregations"]},{"id":"codebase-onboarding","title":"Codebase Onboarding","desc":"Analyze an unfamiliar codebase and generate a structured onboarding guide with architecture map, key entry points, and conventions.","when":"- Joining a new project for the first time\n- Setting up Claude Code on an unfamiliar repo\n- Generating or updating CLAUDE.md","cat":"tools","lines":203,"sections":["When to Activate","Analysis Process","Architecture Mapping","CLAUDE.md Generation","Conventions Detection"]},{"id":"coding-standards","title":"Universal Coding Standards","desc":"Universal coding standards, best practices, and patterns for TypeScript, JavaScript, React, and Node.js development.","when":"- Writing new TypeScript or JavaScript code\n- Reviewing code for quality and consistency","cat":"backend","lines":484,"sections":["When to Activate","TypeScript Patterns","JavaScript Best Practices","React Standards","Node.js Patterns"]},{"id":"compose-multiplatform-patterns","title":"Compose Multiplatform Patterns","desc":"Compose Multiplatform and Jetpack Compose patterns for KMP projects — state management, navigation, theming, and performance.","when":"- Building Compose Multiplatform or Jetpack Compose UI\n- Implementing navigation in KMP or Android apps","cat":"android","lines":332,"sections":["When to Activate","State Management","Navigation","Theming","Performance"]},{"id":"configure-ecc","title":"Configure ECC","desc":"Interactive installer for Everything Claude Code — guides users through selecting and installing skills and rules.","when":"- Setting up Everything Claude Code for the first time\n- Adding new skills to an existing installation","cat":"tools","lines":262,"sections":["When to Activate","Installation Modes","Skill Selection","Path Verification","Optimization"]},{"id":"content-engine","title":"Content Engine","desc":"Create platform-native content systems for X, LinkedIn, TikTok, YouTube, newsletters, and repurposed multi-platform campaigns.","when":"- Creating posts for X, LinkedIn, TikTok, YouTube, or newsletters\n- Turning one piece of content into multiple platform-native versions","cat":"content","lines":97,"sections":["When to Activate","Platform Voice Profiles","Content Transformation","Campaign Structure","Calendar Planning"]},{"id":"content-hash-cache-pattern","title":"Content Hash Cache Pattern","desc":"Cache expensive file processing results using SHA-256 content hashes — path-independent, auto-invalidating.","when":"- Processing files that are expensive to analyze\n- Building pipelines where the same file may be processed multiple times","cat":"other","lines":108,"sections":["When to Activate","Core Pattern","Hash Computation","Cache Storage","Service Layer"]},{"id":"context-budget","title":"Context Budget Advisor","desc":"Audits Claude Code context window consumption across agents, skills, MCP servers, and rules.","when":"","cat":"tools","lines":85,"sections":["When to Activate","Audit Process","Token Counting","Recommendations","Optimization Strategies"]},{"id":"continuous-agent-loop","title":"Continuous Agent Loop","desc":"Patterns for continuous autonomous agent loops with quality gates, evals, and recovery controls.","when":"","cat":"ai_agents","lines":64,"sections":["When to Activate","Loop Architecture","Quality Gates","Recovery Patterns","Termination Conditions"]},{"id":"continuous-learning","title":"Continuous Learning","desc":"Automatically extract reusable patterns from Claude Code sessions and save them as learned skills.","when":"","cat":"tools","lines":109,"sections":["When to Activate","Session Analysis","Pattern Extraction","Skill Generation","Memory Integration"]},{"id":"continuous-learning-v2","title":"Continuous Learning v2","desc":"Instinct-based learning system with confidence scoring and evolution pipeline. v2.1 adds project-scoped instincts.","when":"","cat":"tools","lines":147,"sections":["When to Activate","Instinct System","Confidence Scoring","Evolution Pipeline","Project Scoping"]},{"id":"cost-aware-llm-pipeline","title":"Cost-Aware LLM Pipeline","desc":"Cost optimization patterns for LLM API usage — model routing by task complexity, budget tracking, retry logic, and prompt caching.","when":"- Building LLM-powered features where API costs are a concern\n- Routing tasks to the cheapest model that can handle them","cat":"ai_agents","lines":249,"sections":["When to Activate","Model Routing","Budget Tracking","Prompt Caching","Retry Logic"]},{"id":"cpp-coding-standards","title":"C++ Coding Standards","desc":"C++ coding standards based on C++ Core Guidelines. Modern, safe, and idiomatic practices.","when":"- Writing new C++ code\n- Reviewing C++ code for correctness and safety","cat":"other","lines":361,"sections":["When to Activate","Core Guidelines Summary","Resource Management","Type Safety","Concurrency"]},{"id":"cpp-testing","title":"C++ Testing","desc":"Writing/updating/fixing C++ tests, configuring GoogleTest/CTest, diagnosing failing tests, adding coverage/sanitizers.","when":"- Writing new C++ unit or integration tests\n- Configuring GoogleTest or CTest","cat":"other","lines":235,"sections":["When to Activate","GoogleTest Setup","Test Structure","Mocking with GMock","Coverage"]},{"id":"crosspost","title":"Crosspost","desc":"Multi-platform content distribution across X, LinkedIn, Threads, and Bluesky. Adapts content per platform.","when":"- Distributing content across multiple social platforms\n- Adapting a long-form piece into platform-native posts","cat":"content","lines":113,"sections":["When to Activate","Platform Adaptation Rules","Voice Calibration","Thread Structures","Campaign Coordination"]},{"id":"customs-trade-compliance","title":"Customs & Trade Compliance","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"data-scraper-agent","title":"Data Scraper Agent","desc":"Build a fully automated AI-powered data collection agent for any public source — job boards, prices, news, GitHub, sports.","when":"- Monitor job postings, product prices, news feeds automatically\n- Build a zero-cost data pipeline that runs on GitHub Actions","cat":"other","lines":255,"sections":["When to Activate","Architecture Overview","Scraper Module","LLM Enrichment","Storage Options"]},{"id":"database-migrations","title":"Database Migrations","desc":"Database migration best practices for schema changes, data migrations, rollbacks, and zero-downtime deployments.","when":"- Adding or modifying database tables or columns\n- Planning zero-downtime deployments with database changes","cat":"backend","lines":337,"sections":["When to Activate","Migration Principles","Schema Changes","Data Migrations","Rollback Strategies"]},{"id":"deep-research","title":"Deep Research","desc":"Multi-source deep research using firecrawl and exa MCPs. Synthesizes findings and delivers cited reports.","when":"- User asks for research on a topic with citations\n- User needs competitive intelligence or market sizing","cat":"ai_agents","lines":83,"sections":["When to Activate","Research Process","Source Evaluation","Citation Format","Report Structure"]},{"id":"deployment-patterns","title":"Deployment Patterns","desc":"Deployment workflows, CI/CD pipeline patterns, Docker containerization, health checks, and rollback strategies.","when":"- Setting up CI/CD pipelines\n- Configuring Docker for production","cat":"backend","lines":487,"sections":["When to Activate","CI/CD Pipelines","Docker Patterns","Health Checks","Rollback Strategy"]},{"id":"design-system","title":"Design System","desc":"Generate or audit design systems, check visual consistency, and review PRs that touch styling.","when":"Use this skill to generate or audit design systems, check visual consistency, and review PRs that touch styling.","cat":"frontend","lines":78,"sections":["When to Activate","Design Tokens","Component Patterns","Visual Consistency","Audit Process"]},{"id":"django-patterns","title":"Django Patterns","desc":"Django architecture patterns, REST API design with DRF, ORM best practices, caching, signals, and middleware.","when":"- Building Django REST APIs with DRF\n- Structuring a Django project for scale","cat":"python","lines":474,"sections":["When to Activate","Project Structure","Models and ORM","Serializers","Views and ViewSets"]},{"id":"django-security","title":"Django Security","desc":"Django security best practices, authentication, authorization, CSRF/XSS prevention, and secure deployment.","when":"- Adding authentication or authorization\n- Deploying Django to production","cat":"python","lines":289,"sections":["When to Activate","Authentication","Authorization","Input Validation","CSRF and XSS"]},{"id":"django-tdd","title":"Django TDD","desc":"Django testing strategies with pytest-django, TDD methodology, factory_boy, mocking, and coverage.","when":"- Writing tests for new Django features\n- Setting up pytest-django on an existing project","cat":"python","lines":285,"sections":["When to Activate","Test Setup","Test Structure","Factory Patterns","API Testing"]},{"id":"django-verification","title":"Django Verification Loop","desc":"Verification loop for Django projects: migrations, linting, tests with coverage, security scans, and deployment readiness.","when":"- Before opening a PR or merging code\n- After making significant changes","cat":"python","lines":137,"sections":["When to Activate","Verification Steps","Migration Check","Coverage Gate","Security Scan"]},{"id":"dmux-workflows","title":"Dmux Workflows","desc":"Multi-agent orchestration using dmux (tmux pane manager for AI agents). Patterns for parallel agent workflows.","when":"- Running multiple AI agent sessions in parallel\n- Coordinating multi-agent development workflows","cat":"ai_agents","lines":166,"sections":["When to Activate","Installation","Pane Management","Agent Coordination","Workflow Patterns"]},{"id":"docker-patterns","title":"Docker Patterns","desc":"Docker and Docker Compose patterns for local development, container security, networking, and multi-service orchestration.","when":"- Writing Dockerfiles for development or production\n- Setting up Docker Compose for local development","cat":"backend","lines":386,"sections":["When to Activate","Dockerfile Best Practices","Docker Compose","Networking","Security"]},{"id":"documentation-lookup","title":"Documentation Lookup","desc":"Use up-to-date library and framework docs via Context7 MCP instead of training data.","when":"- User asks how to set up, configure, or install a library\n- User asks for API references or usage examples","cat":"tools","lines":78,"sections":["When to Activate","MCP Usage","Doc Search Strategy","Code Examples","Version Handling"]},{"id":"e2e-testing","title":"E2E Testing with Playwright","desc":"Playwright E2E testing patterns, Page Object Model, CI/CD integration, and flaky test strategies.","when":"- Writing new E2E tests with Playwright\n- Configuring Playwright for CI/CD","cat":"frontend","lines":291,"sections":["When to Activate","Setup and Configuration","Page Object Model","Test Patterns","CI/CD Integration"]},{"id":"energy-procurement","title":"Energy Procurement","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"enterprise-agent-ops","title":"Enterprise Agent Ops","desc":"Operate long-lived agent workloads with observability, security boundaries, and lifecycle management.","when":"","cat":"ai_agents","lines":72,"sections":["When to Activate","Observability","Security Boundaries","Lifecycle Management","Incident Response"]},{"id":"eval-harness","title":"Eval Harness","desc":"Formal evaluation framework for Claude Code sessions implementing eval-driven development (EDD) principles.","when":"- Starting a new Claude Code project\n- When evaluating model or tool changes","cat":"ai_agents","lines":190,"sections":["When to Activate","EDD Principles","Eval Structure","Metrics","Reporting"]},{"id":"exa-search","title":"Exa Neural Search","desc":"Neural search via Exa MCP for web, code, and company research.","when":"- User asks a web search question\n- User needs current news or live data","cat":"content","lines":101,"sections":["When to Activate","Installation","Search Types","Query Patterns","Result Handling"]},{"id":"fal-ai-media","title":"Fal.ai Media Generation","desc":"Unified media generation via fal.ai MCP — image, video, and audio.","when":"- User wants to generate an image, video, or audio file with AI","cat":"content","lines":188,"sections":["When to Activate","Image Generation","Video Generation","Audio Generation","Asset Management"]},{"id":"flutter-dart-code-review","title":"Flutter/Dart Code Review","desc":"Library-agnostic Flutter/Dart code review checklist covering widget best practices, state management, performance, and accessibility.","when":"- Reviewing a Flutter PR or code diff\n- Auditing an existing Flutter app","cat":"other","lines":295,"sections":["When to Activate","Widget Best Practices","State Management Review","Dart Idioms","Performance"]},{"id":"foundation-models-on-device","title":"Foundation Models On-Device","desc":"Apple FoundationModels framework for on-device LLM — text generation, guided generation, tool calling in iOS 26+.","when":"- Building iOS 26+ apps with on-device LLM\n- Using guided generation with @Generable","cat":"android","lines":179,"sections":["When to Activate","Core API","Guided Generation","Tool Calling","Snapshot Streaming"]},{"id":"frontend-patterns","title":"Frontend Development Patterns","desc":"Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.","when":"- Building React components or pages\n- Implementing state management","cat":"frontend","lines":558,"sections":["When to Activate","Component Architecture","State Management","Performance","Next.js Patterns"]},{"id":"frontend-slides","title":"Frontend Slides","desc":"Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files.","when":"- User wants to create a presentation or slide deck\n- User wants animated, interactive slides","cat":"frontend","lines":246,"sections":["When to Activate","Slide Architecture","Animation System","Style Presets","PPTX Conversion"]},{"id":"git-workflow","title":"Git Workflow","desc":"Git workflow patterns including branching strategies, commit conventions, merge vs rebase, and conflict resolution.","when":"- Setting up a git workflow for a new team\n- Deciding between merge and rebase","cat":"backend","lines":338,"sections":["When to Activate","Branching Strategies","Commit Conventions","Merge vs Rebase","Conflict Resolution"]},{"id":"golang-patterns","title":"Go Patterns","desc":"Idiomatic Go patterns, best practices, and conventions for robust, efficient Go applications.","when":"- Writing new Go code\n- Structuring a Go project or module","cat":"go","lines":367,"sections":["When to Activate","Project Structure","Error Handling","Interfaces","Concurrency"]},{"id":"golang-testing","title":"Go Testing","desc":"Go testing patterns including table-driven tests, subtests, benchmarks, fuzzing, and test coverage.","when":"- Writing tests for Go code\n- Adding benchmarks or fuzz tests","cat":"go","lines":253,"sections":["When to Activate","Table-Driven Tests","Subtests","Benchmarks","Fuzzing"]},{"id":"healthcare-cdss-patterns","title":"Healthcare CDSS Patterns","desc":"Clinical Decision Support System patterns — drug interaction checking, dose validation, clinical scoring, and alert classification.","when":"- Building clinical decision support features\n- Implementing drug interaction or dose validation","cat":"healthcare","lines":309,"sections":["When to Activate","Core Safety Principles","Drug Interaction Checking","Dose Validation","Clinical Scoring"]},{"id":"healthcare-emr-patterns","title":"Healthcare EMR Patterns","desc":"EMR/EHR development patterns — clinical safety, encounter workflows, prescription generation, and accessibility-first UI.","when":"- Building EMR/EHR features or integrations\n- Implementing clinical encounter workflows","cat":"healthcare","lines":299,"sections":["When to Activate","Clinical Safety First","Encounter Workflow","Prescription Patterns","Accessibility"]},{"id":"healthcare-eval-harness","title":"Healthcare Eval Harness","desc":"Patient safety evaluation harness for healthcare application deployments with automated test suites.","when":"- Before deploying any healthcare application\n- After adding new clinical features","cat":"healthcare","lines":268,"sections":["When to Activate","Safety Test Suite","CDSS Accuracy Tests","PHI Exposure Tests","Clinical Workflow Tests"]},{"id":"healthcare-phi-compliance","title":"Healthcare PHI Compliance","desc":"PHI and PII compliance patterns — data classification, access control, audit trails, and encryption.","when":"- Handling patient data in any form\n- Building access control for health records","cat":"healthcare","lines":279,"sections":["When to Activate","PHI Classification","Access Control","Audit Trails","Encryption"]},{"id":"inventory-demand-planning","title":"Inventory Demand Planning","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"investor-materials","title":"Investor Materials","desc":"Create pitch decks, one-pagers, investor memos, accelerator applications, and financial models.","when":"- Creating a pitch deck or investor memo\n- Building financial models","cat":"content","lines":193,"sections":["When to Activate","Document Types","Pitch Deck Structure","Financial Models","Internal Consistency"]},{"id":"investor-outreach","title":"Investor Outreach","desc":"Draft cold emails, warm intro blurbs, follow-ups, and investor communications for fundraising.","when":"- Drafting a cold outreach email to an investor\n- Sending a follow-up after a meeting","cat":"content","lines":88,"sections":["When to Activate","Cold Email Structure","Warm Intro Blurbs","Follow-Up Templates","Update Emails"]},{"id":"iterative-retrieval","title":"Iterative Retrieval","desc":"Pattern for progressively refining context retrieval to solve the subagent context problem.","when":"","cat":"ai_agents","lines":83,"sections":["When to Activate","Core Pattern","Retrieval Stages","Context Budget","Termination Conditions"]},{"id":"java-coding-standards","title":"Java Coding Standards","desc":"Java coding standards for Spring Boot services: naming, immutability, Optional usage, streams, and exceptions.","when":"- Writing new Java code for Spring Boot\n- Reviewing Java code for style","cat":"java_spring","lines":297,"sections":["When to Activate","Naming Conventions","Immutability","Optional Usage","Streams and Lambdas"]},{"id":"jpa-patterns","title":"JPA/Hibernate Patterns","desc":"JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, and auditing.","when":"- Designing JPA entities and relationships\n- Optimizing N+1 query problems","cat":"java_spring","lines":398,"sections":["When to Activate","Entity Design","Relationships","Query Optimization","Transactions"]},{"id":"kotlin-coroutines-flows","title":"Kotlin Coroutines & Flows","desc":"Kotlin Coroutines and Flow patterns — structured concurrency, Flow operators, StateFlow, and error handling.","when":"- Writing async code with Kotlin coroutines\n- Implementing reactive streams with Flow","cat":"android","lines":363,"sections":["When to Activate","Coroutine Fundamentals","Flow Patterns","StateFlow and SharedFlow","Error Handling"]},{"id":"kotlin-exposed-patterns","title":"Kotlin Exposed ORM Patterns","desc":"JetBrains Exposed ORM patterns including DSL queries, DAO pattern, transactions, and HikariCP.","when":"- Using Exposed ORM in a Kotlin backend\n- Writing type-safe SQL with Exposed DSL","cat":"android","lines":264,"sections":["When to Activate","Table Definitions","DSL Queries","DAO Pattern","Transactions"]},{"id":"kotlin-ktor-patterns","title":"Kotlin Ktor Patterns","desc":"Ktor server patterns including routing DSL, plugins, authentication, Koin DI, and WebSockets.","when":"- Building a Ktor server application\n- Implementing REST APIs with Ktor routing","cat":"android","lines":325,"sections":["When to Activate","Routing DSL","Plugins","Authentication","Koin Integration"]},{"id":"kotlin-patterns","title":"Kotlin Development Patterns","desc":"Idiomatic Kotlin patterns, best practices, and conventions with coroutines, null safety, and DSL builders.","when":"- Writing new Kotlin code\n- Designing Kotlin modules or libraries","cat":"android","lines":711,"sections":["When to Activate","Null Safety","Immutability","Sealed Classes","Coroutines"]},{"id":"kotlin-testing","title":"Kotlin Testing","desc":"Kotlin testing patterns with Kotest, MockK, coroutine testing, property-based testing, and Kover coverage.","when":"- Writing tests for Kotlin code\n- Mocking dependencies with MockK","cat":"android","lines":328,"sections":["When to Activate","Kotest Setup","MockK Patterns","Coroutine Testing","Property-Based Testing"]},{"id":"laravel-patterns","title":"Laravel Patterns","desc":"Laravel architecture patterns, routing/controllers, Eloquent ORM, service layers, queues, and API resources.","when":"- Building Laravel REST APIs\n- Implementing service layers or repositories","cat":"other","lines":420,"sections":["When to Activate","Project Structure","Routing and Controllers","Eloquent Patterns","Service Layer"]},{"id":"laravel-plugin-discovery","title":"Laravel Plugin Discovery","desc":"Discover and evaluate Laravel packages via LaraPlugins.io MCP.","when":"- User asks for a Laravel package recommendation","cat":"other","lines":66,"sections":["When to Activate","MCP Usage","Search Strategy","Health Evaluation","Compatibility Check"]},{"id":"laravel-security","title":"Laravel Security","desc":"Laravel security best practices for authn/authz, validation, file uploads, rate limiting, and secure deployment.","when":"- Adding authentication to a Laravel app\n- Deploying Laravel to production","cat":"other","lines":247,"sections":["When to Activate","Authentication","Authorization","Input Validation","File Upload Security"]},{"id":"laravel-tdd","title":"Laravel TDD","desc":"Test-driven development for Laravel with PHPUnit and Pest, factories, and database testing.","when":"- Writing tests for new Laravel features\n- Setting up Pest on an existing Laravel project","cat":"other","lines":260,"sections":["When to Activate","Test Setup","Feature Tests","Unit Tests","Database Testing"]},{"id":"laravel-verification","title":"Laravel Verification Loop","desc":"Verification loop for Laravel projects: env checks, linting, static analysis, tests, and deployment readiness.","when":"- Before opening a PR or merging code","cat":"other","lines":132,"sections":["When to Activate","Verification Steps","Static Analysis","Coverage Gate","Security Scan"]},{"id":"liquid-glass-design","title":"Liquid Glass Design","desc":"iOS 26 Liquid Glass design system — dynamic glass material with blur, reflection, and interactive morphing.","when":"- Building iOS 26+ apps with Liquid Glass aesthetic\n- Implementing glass-morphism in SwiftUI","cat":"swift_ios","lines":258,"sections":["When to Activate","Material System","SwiftUI Implementation","UIKit Integration","WidgetKit"]},{"id":"logistics-exception-management","title":"Logistics Exception Management","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"market-research","title":"Market Research","desc":"Conduct market research, competitive analysis, investor due diligence, and industry intelligence.","when":"- User wants market sizing or TAM/SAM/SOM analysis\n- User needs a competitive landscape","cat":"content","lines":142,"sections":["When to Activate","Research Process","Market Sizing","Competitive Analysis","Source Attribution"]},{"id":"mcp-server-patterns","title":"MCP Server Patterns","desc":"Build MCP servers with Node/TypeScript SDK — tools, resources, prompts, Zod validation, and transports.","when":"- Building a new MCP server\n- Adding tools or resources to an existing MCP server","cat":"tools","lines":229,"sections":["When to Activate","Server Setup","Tool Definitions","Resource Patterns","Prompt Templates"]},{"id":"nanoclaw-repl","title":"NanoClaw REPL","desc":"Operate and extend NanoClaw v2, ECC's zero-dependency session-aware REPL.","when":"","cat":"other","lines":73,"sections":["When to Activate","Architecture","Commands","Session Management","Extension Points"]},{"id":"nextjs-turbopack","title":"Next.js + Turbopack","desc":"Next.js 16+ and Turbopack — incremental bundling, FS caching, and dev speed optimization.","when":"- Starting a new Next.js 16+ project\n- Migrating to Turbopack","cat":"frontend","lines":166,"sections":["When to Activate","Turbopack Setup","Configuration","Performance","Migration"]},{"id":"nutrient-document-processing","title":"Nutrient Document Processing","desc":"Process, convert, OCR, extract, redact, sign, and fill documents using the Nutrient DWS API.","when":"- Processing or converting documents\n- Adding OCR to scanned documents","cat":"other","lines":214,"sections":["When to Activate","API Setup","Document Conversion","OCR","Redaction"]},{"id":"nuxt4-patterns","title":"Nuxt 4 Patterns","desc":"Nuxt 4 app patterns for hydration safety, performance, route rules, and SSR-safe data fetching.","when":"- Building a Nuxt 4 application\n- Debugging hydration mismatches","cat":"frontend","lines":214,"sections":["When to Activate","App Directory","Data Fetching","Route Rules","Hydration Safety"]},{"id":"openclaw-persona-forge","title":"OpenClaw Persona Forge","desc":"","when":"","cat":"other","lines":10,"sections":[]},{"id":"perl-patterns","title":"Modern Perl Patterns","desc":"Modern Perl 5.36+ idioms, best practices, and conventions for robust, maintainable Perl applications.","when":"- Writing new Perl 5.36+ code\n- Reviewing or refactoring existing Perl","cat":"other","lines":258,"sections":["When to Activate","Modern Perl Features","Type System","Error Handling","OOP with Moose"]},{"id":"perl-security","title":"Perl Security","desc":"Comprehensive Perl security covering taint mode, input validation, safe process execution, and web security.","when":"- Writing Perl that handles user input\n- Building web applications in Perl","cat":"other","lines":229,"sections":["When to Activate","Taint Mode","Input Validation","DBI Security","Web Security"]},{"id":"perl-testing","title":"Perl Testing","desc":"Perl testing patterns using Test2::V0, Test::More, prove runner, mocking, and coverage.","when":"- Writing tests for Perl modules or scripts\n- Setting up Test2 or migrating from Test::More","cat":"other","lines":191,"sections":["When to Activate","Test Setup","Test Patterns","Mocking","Coverage"]},{"id":"plankton-code-quality","title":"Plankton Code Quality","desc":"Write-time code quality enforcement using Plankton — auto-formatting, linting, and Claude-powered fixes.","when":"","cat":"other","lines":71,"sections":["When to Activate","Installation","Hook Configuration","Quality Gates","Claude Fixes"]},{"id":"postgres-patterns","title":"PostgreSQL Patterns","desc":"PostgreSQL patterns for query optimization, schema design, indexing, Row Level Security, and connection pooling.","when":"- Designing PostgreSQL schemas\n- Writing complex queries or CTEs","cat":"backend","lines":398,"sections":["When to Activate","Schema Design","Query Optimization","Indexing","Row Level Security"]},{"id":"product-lens","title":"Product Lens","desc":"Validate the \"why\" before building, run product diagnostics, and convert vague ideas into specs.","when":"Use this skill to validate the \"why\" before building, run product diagnostics, and convert vague ideas into specs.","cat":"other","lines":86,"sections":["When to Activate","Product Validation","Diagnostic Process","Spec Generation","User Stories"]},{"id":"production-scheduling","title":"Production Scheduling","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"project-guidelines-example","title":"Project Guidelines Example","desc":"Example project-specific skill template based on a real production application.","when":"","cat":"other","lines":157,"sections":["When to Activate","Project Overview","Technology Stack","Coding Standards","Testing Requirements"]},{"id":"prompt-optimizer","title":"Prompt Optimizer","desc":"","when":"","cat":"tools","lines":11,"sections":[]},{"id":"python-patterns","title":"Python Patterns","desc":"Pythonic idioms, PEP 8 standards, type hints, and best practices for robust Python applications.","when":"- Writing new Python code\n- Adding type hints to existing code","cat":"python","lines":407,"sections":["When to Activate","Type Hints","Data Classes","Error Handling","Context Managers"]},{"id":"python-testing","title":"Python Testing","desc":"Python testing strategies using pytest, TDD methodology, fixtures, mocking, and parametrization.","when":"- Writing tests for Python code\n- Setting up pytest on a new project","cat":"python","lines":310,"sections":["When to Activate","Pytest Setup","Fixtures","Mocking","Parametrization"]},{"id":"pytorch-patterns","title":"PyTorch Patterns","desc":"PyTorch deep learning patterns for training pipelines, model architectures, and data loading.","when":"- Building or training PyTorch models\n- Implementing training loops","cat":"python","lines":416,"sections":["When to Activate","Model Architecture","Data Loading","Training Loop","Optimization"]},{"id":"quality-nonconformance","title":"Quality Nonconformance","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"ralphinho-rfc-pipeline","title":"Ralphinho RFC Pipeline","desc":"RFC-driven multi-agent DAG execution pattern with quality gates and merge queues.","when":"","cat":"other","lines":108,"sections":["When to Activate","RFC Format","DAG Architecture","Quality Gates","Merge Queue"]},{"id":"regex-vs-llm-structured-text","title":"Regex vs LLM for Structured Text","desc":"Decision framework for choosing between regex and LLM when parsing structured text.","when":"- Parsing structured text (logs, CSV variants, custom formats)\n- Deciding whether to use regex or LLM","cat":"other","lines":77,"sections":["When to Activate","Decision Framework","Regex Patterns","LLM Integration","Hybrid Approach"]},{"id":"repo-scan","title":"Repo Scan","desc":"Cross-stack source code asset audit with interactive HTML reports.","when":"","cat":"tools","lines":113,"sections":["When to Activate","Scan Process","File Classification","Library Detection","Report Format"]},{"id":"returns-reverse-logistics","title":"Returns & Reverse Logistics","desc":"","when":"","cat":"other","lines":6,"sections":[]},{"id":"rules-distill","title":"Rules Distill","desc":"Scan skills to extract cross-cutting principles and distill them into rules.","when":"","cat":"tools","lines":84,"sections":["When to Activate","Distillation Process","Rule Extraction","Rule Format","File Management"]},{"id":"rust-patterns","title":"Rust Patterns","desc":"Idiomatic Rust patterns, ownership, error handling, traits, and concurrency best practices.","when":"- Writing new Rust code\n- Implementing error handling with thiserror or anyhow","cat":"rust","lines":370,"sections":["When to Activate","Ownership Patterns","Error Handling","Traits","Concurrency"]},{"id":"rust-testing","title":"Rust Testing","desc":"Rust testing patterns including unit tests, integration tests, async testing, and property-based testing.","when":"- Writing unit or integration tests in Rust\n- Adding property-based testing with proptest","cat":"rust","lines":261,"sections":["When to Activate","Unit Tests","Integration Tests","Async Testing","Property-Based Testing"]},{"id":"safety-guard","title":"Safety Guard","desc":"Prevent destructive operations when working on production systems or running agents autonomously.","when":"Use this skill to prevent destructive operations when working on production systems or running agents autonomously.","cat":"testing","lines":82,"sections":["When to Activate","Destructive Operation Detection","Confirmation Patterns","Rollback Strategy","Audit Log"]},{"id":"santa-method","title":"Santa Method","desc":"Multi-agent adversarial verification with convergence loop. Two independent review agents must both pass.","when":"","cat":"other","lines":71,"sections":["When to Activate","Architecture","Review Agent A","Review Agent B","Convergence Loop"]},{"id":"search-first","title":"Search First","desc":"Research-before-coding workflow. Search for existing tools and patterns before writing custom code.","when":"- Before implementing any new feature\n- When the task might be solved by an existing library","cat":"tools","lines":67,"sections":["When to Activate","Search Process","Library Evaluation","Decision Criteria","Integration Patterns"]},{"id":"security-review","title":"Security Review","desc":"Security review for authentication, user input handling, secrets management, and API endpoint security.","when":"- Adding authentication or authorization\n- Handling user input or file uploads\n- Working with API keys or credentials","cat":"testing","lines":378,"sections":["When to Activate","Authentication","Input Validation","Secrets Management","API Security"]},{"id":"security-scan","title":"Security Scan","desc":"Scan Claude Code configuration for security vulnerabilities, misconfigurations, and injection risks.","when":"- After modifying .claude/ configuration files\n- Before deploying a Claude Code project","cat":"testing","lines":99,"sections":["When to Activate","Scan Targets","Vulnerability Classes","AgentShield Integration","Report Format"]},{"id":"skill-comply","title":"Skill Comply","desc":"Visualize whether skills, rules, and agents are actually followed with compliance rate reporting.","when":"","cat":"other","lines":129,"sections":["When to Activate","Compliance Architecture","Scenario Generation","Agent Execution","Classification"]},{"id":"skill-stocktake","title":"Skill Stocktake","desc":"Audit Claude skills and commands for quality with Quick Scan and Full Stocktake modes.","when":"- Auditing existing skills before a major release\n- Running a periodic quality review","cat":"tools","lines":172,"sections":["When to Activate","Scan Modes","Quality Criteria","Batch Evaluation","Report Format"]},{"id":"springboot-patterns","title":"Spring Boot Patterns","desc":"Spring Boot architecture patterns, REST API design, layered services, data access, and caching.","when":"- Building Spring Boot REST APIs\n- Adding caching or async processing","cat":"java_spring","lines":483,"sections":["When to Activate","Project Structure","REST Controllers","Service Layer","Data Access"]},{"id":"springboot-security","title":"Spring Boot Security","desc":"Spring Security best practices for authn/authz, JWT, OAuth2, CSRF, and dependency security.","when":"- Implementing JWT or OAuth2\n- Securing API endpoints","cat":"java_spring","lines":335,"sections":["When to Activate","Authentication","Authorization","JWT Patterns","Input Validation"]},{"id":"springboot-tdd","title":"Spring Boot TDD","desc":"TDD for Spring Boot using JUnit 5, Mockito, MockMvc, and Testcontainers.","when":"- Writing tests for new Spring Boot features\n- Using Testcontainers for integration tests","cat":"java_spring","lines":310,"sections":["When to Activate","Test Structure","MockMvc Patterns","Mockito","Testcontainers"]},{"id":"springboot-verification","title":"Spring Boot Verification Loop","desc":"Verification loop for Spring Boot projects: build, static analysis, tests, and security scans.","when":"- Before opening a PR or merging code\n- Running a pre-deployment checklist","cat":"java_spring","lines":126,"sections":["When to Activate","Verification Steps","Static Analysis","Coverage Gate","Security Scan"]},{"id":"strategic-compact","title":"Strategic Compact","desc":"Manual context compaction at logical intervals to preserve context through task phases.","when":"","cat":"tools","lines":59,"sections":["When to Activate","Compaction Triggers","Compact Summary Format","Phase Transitions","Context Preservation"]},{"id":"swift-actor-persistence","title":"Swift Actor Persistence","desc":"Thread-safe data persistence in Swift using actors — eliminating data races by design.","when":"- Implementing thread-safe data persistence\n- Replacing DispatchQueue with actors","cat":"swift_ios","lines":157,"sections":["When to Activate","Actor Pattern","In-Memory Cache","File-Backed Storage","Concurrency Safety"]},{"id":"swift-concurrency-6-2","title":"Swift Concurrency 6.2","desc":"Swift 6.2 Approachable Concurrency — single-threaded by default, @concurrent for background offloading.","when":"- Writing async/await code in Swift 6.2+\n- Migrating to approachable concurrency","cat":"swift_ios","lines":178,"sections":["When to Activate","Concurrency Model","@concurrent","MainActor","Sendability"]},{"id":"swift-protocol-di-testing","title":"Swift Protocol DI Testing","desc":"Protocol-based dependency injection for testable Swift code with Swift Testing framework.","when":"- Writing testable Swift code with DI\n- Mocking file system or network dependencies","cat":"swift_ios","lines":194,"sections":["When to Activate","Protocol Design","Dependency Injection","Swift Testing","Mock Patterns"]},{"id":"swiftui-patterns","title":"SwiftUI Patterns","desc":"SwiftUI architecture patterns, state management with @Observable, navigation, and performance optimization.","when":"- Building SwiftUI views or components\n- Implementing NavigationStack","cat":"swift_ios","lines":360,"sections":["When to Activate","State Management","Navigation","View Composition","Performance"]},{"id":"tdd-workflow","title":"TDD Workflow","desc":"Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests.","when":"- Writing any new feature or bug fix\n- Refactoring existing code","cat":"testing","lines":175,"sections":["When to Activate","Red-Green-Refactor","Test Pyramid","Coverage Requirements","CI Integration"]},{"id":"team-builder","title":"Team Builder","desc":"Interactive agent picker for composing and dispatching parallel teams.","when":"","cat":"other","lines":73,"sections":["When to Activate","Team Composition","Agent Selection","Parallel Dispatch","Results Aggregation"]},{"id":"token-budget-advisor","title":"Token Budget Advisor","desc":"","when":"","cat":"tools","lines":16,"sections":[]},{"id":"verification-loop","title":"Verification Loop","desc":"A comprehensive verification system for Claude Code sessions.","when":"- After completing any significant code change\n- Before submitting a PR or merging","cat":"testing","lines":143,"sections":["When to Activate","Verification Stages","Build Check","Test Run","Lint and Format"]},{"id":"video-editing","title":"Video Editing","desc":"AI-assisted video editing workflows — cutting, structuring, and augmenting real footage with FFmpeg, Remotion, and ElevenLabs.","when":"- User wants to edit video or assemble a timeline\n- User wants to add subtitles or transitions","cat":"content","lines":226,"sections":["When to Activate","Pipeline Overview","FFmpeg Patterns","Remotion Integration","ElevenLabs Audio"]},{"id":"videodb","title":"VideoDB","desc":"See, Understand, Act on video and audio. Ingest, index, search moments, and build timelines.","when":"- User wants to search video content by description\n- User wants to extract clips or thumbnails","cat":"content","lines":239,"sections":["When to Activate","Ingestion","Indexing","Search","Timeline Editing"]},{"id":"visa-doc-translate","title":"Visa Document Translation","desc":"Translate visa application documents (images) to English and create bilingual PDFs.","when":"","cat":"other","lines":60,"sections":["When to Activate","Document Processing","OCR","Translation","PDF Generation"]},{"id":"x-api","title":"X / Twitter API","desc":"X/Twitter API integration for posting, reading timelines, search, and analytics.","when":"- User wants to post a tweet or thread via API\n- User is building a bot or scheduled poster","cat":"content","lines":199,"sections":["When to Activate","Authentication","Posting","Reading","Rate Limits"]}];
+
+/* ═══════════════════════════════════════════
+   Categories
+   ═══════════════════════════════════════════ */
+const CATEGORIES = {
+  all:         { icon: '🗂️', ar: 'جميع المهارات',    en: 'All Skills',       color: '#00d9ff' },
+  ai_agents:   { icon: '🧠', ar: 'الذكاء والوكلاء',   en: 'AI & Agents',      color: '#a78bfa' },
+  backend:     { icon: '⚙️', ar: 'الخلفية والـ API',  en: 'Backend / API',    color: '#6366f1' },
+  frontend:    { icon: '🎨', ar: 'الواجهة الأمامية',   en: 'Frontend / UI',    color: '#f472b6' },
+  testing:     { icon: '🛡️', ar: 'الاختبار والأمان',   en: 'Testing / Security', color: '#f59e0b' },
+  android:     { icon: '🤖', ar: 'أندرويد / كوتلن',    en: 'Android / Kotlin', color: '#3ddc84' },
+  python:      { icon: '🐍', ar: 'بايثون / جانغو',    en: 'Python / Django',  color: '#fbbf24' },
+  java_spring: { icon: '☕', ar: 'جافا / سبرنغ',      en: 'Java / Spring',    color: '#f97316' },
+  swift_ios:   { icon: '🍎', ar: 'سويفت / iOS',       en: 'Swift / iOS',      color: '#ff6b6b' },
+  rust:        { icon: '⚙️', ar: 'رست',              en: 'Rust',             color: '#ce422b' },
+  go:          { icon: '🐹', ar: 'Go',               en: 'Go',               color: '#00add8' },
+  healthcare:  { icon: '🏥', ar: 'الرعاية الصحية',    en: 'Healthcare',       color: '#10b981' },
+  content:     { icon: '📝', ar: 'المحتوى والميديا',   en: 'Content / Media',  color: '#06b6d4' },
+  tools:       { icon: '🔧', ar: 'أدوات / DevOps',    en: 'Tools / DevOps',   color: '#8b5cf6' },
+  other:       { icon: '📦', ar: 'أخرى',             en: 'Other',            color: '#64748b' },
+};
+
+/* ═══════════════════════════════════════════
+   i18n
+   ═══════════════════════════════════════════ */
+const I18N = {
+  ar: {
+    skills: 'مهارة', visible: 'ظاهر', results: 'نتيجة',
+    categories: 'الفئات', search: 'ابحث في المهارات...',
+    noResults: 'لا توجد نتائج', close: '✕ إغلاق',
+    description: 'الوصف', whenToUse: 'متى تُستخدم',
+    sections: 'الأقسام', fileInfo: 'معلومات الملف',
+    lines: 'عدد السطور', category: 'الفئة',
+    install: 'كيفية الاستخدام مع Claude Code',
+    copy: 'نسخ', copied: '✓ تم', noDesc: 'لا يوجد وصف',
+    line: 'سطر',
+  },
+  en: {
+    skills: 'skills', visible: 'visible', results: 'results',
+    categories: 'Categories', search: 'Search skills...',
+    noResults: 'No results found', close: '✕ Close',
+    description: 'Description', whenToUse: 'When to Use',
+    sections: 'Sections', fileInfo: 'File Info',
+    lines: 'Lines', category: 'Category',
+    install: 'Usage with Claude Code',
+    copy: 'Copy', copied: '✓ Done', noDesc: 'No description',
+    line: 'lines',
+  },
+};
+
+/* ═══════════════════════════════════════════
+   State
+   ═══════════════════════════════════════════ */
+let lang = 'ar';
+let currentCat = 'all';
+let searchTerm = '';
+let sortAZ = false;
+
+const $ = (id) => document.getElementById(id);
+
+function t(key) { return I18N[lang][key] || key; }
+function catLabel(cat) { return CATEGORIES[cat]?.[lang] || cat; }
+function catColor(cat) { return CATEGORIES[cat]?.color || '#64748b'; }
+function catIcon(cat)  { return CATEGORIES[cat]?.icon || '📦'; }
+
+/* ═══════════════════════════════════════════
+   Language Toggle
+   ═══════════════════════════════════════════ */
+function toggleLang() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  const dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.documentElement.lang = lang;
+  document.documentElement.dir = dir;
+  document.body.dir = dir;
+  $('searchInput').placeholder = t('search');
+  $('searchInput').dir = dir;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  renderSidebar();
+  renderSkills();
+  // Re-render detail if open
+  const panel = $('detailPanel');
+  if (panel.classList.contains('open')) {
+    const codeEl = panel.querySelector('.install-box');
+    if (codeEl) {
+      const id = codeEl.dataset.skillId;
+      if (id) openDetail(id);
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Sidebar
+   ═══════════════════════════════════════════ */
+function renderSidebar() {
+  const counts = {};
+  SKILLS.forEach(s => { counts[s.cat] = (counts[s.cat] || 0) + 1; });
+
+  let html = `<div class="sidebar-label">${t('categories')}</div>`;
+
+  for (const [key, cat] of Object.entries(CATEGORIES)) {
+    const count = key === 'all' ? SKILLS.length : (counts[key] || 0);
+    if (key !== 'all' && count === 0) continue;
+    const active = currentCat === key ? 'active' : '';
+    html += `<button class="cat-btn ${active}" onclick="selectCat('${key}')">
+      <span class="cat-icon">${cat.icon}</span>
+      ${catLabel(key)}
+      <span class="cat-count">${count}</span>
+    </button>`;
+  }
+
+  $('sidebar').innerHTML = html;
+}
+
+function selectCat(cat) {
+  currentCat = cat;
+  renderSidebar();
+  renderSkills();
+  closeDetail();
+}
+
+/* ═══════════════════════════════════════════
+   Filter & Sort
+   ═══════════════════════════════════════════ */
+function filterSkills() {
+  searchTerm = $('searchInput').value.toLowerCase();
+  renderSkills();
+}
+
+function toggleSort() {
+  sortAZ = !sortAZ;
+  $('sortBtn').textContent = sortAZ ? 'Z→A' : 'A→Z';
+  renderSkills();
+}
+
+function getFiltered() {
+  let list = SKILLS;
+  if (currentCat !== 'all') list = list.filter(s => s.cat === currentCat);
+  if (searchTerm) {
+    list = list.filter(s =>
+      s.title.toLowerCase().includes(searchTerm) ||
+      s.id.toLowerCase().includes(searchTerm) ||
+      s.desc.toLowerCase().includes(searchTerm)
+    );
+  }
+  if (sortAZ) list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+  return list;
+}
+
+/* ═══════════════════════════════════════════
+   Render Skills Grid
+   ═══════════════════════════════════════════ */
+function renderSkills() {
+  const filtered = getFiltered();
+  $('totalCount').textContent = SKILLS.length;
+  $('visibleCount').textContent = filtered.length;
+  $('resultCount').textContent = filtered.length;
+
+  $('activeFilter').innerHTML = currentCat !== 'all'
+    ? `<span class="filter-chip">${catIcon(currentCat)} ${catLabel(currentCat)}</span>`
+    : '';
+
+  if (!filtered.length) {
+    $('skillsGrid').innerHTML = `<div class="empty-state">
+      <span class="icon">🔍</span>
+      <p>${t('noResults')} "${searchTerm}"</p>
+    </div>`;
+    return;
+  }
+
+  $('skillsGrid').innerHTML = filtered.map((s, i) => {
+    const color = catColor(s.cat);
+    return `<div class="skill-card" style="--card-accent:${color};animation-delay:${i * 0.015}s" onclick="openDetail('${s.id}')">
+      <div class="card-head">
+        <div class="card-icon" style="color:${color};background:${color}12;border-color:${color}25">${catIcon(s.cat)}</div>
+        <div>
+          <div class="card-title">${s.title}</div>
+          <div class="card-id">${s.id}</div>
+        </div>
+      </div>
+      <div class="card-desc">${s.desc || `<em style="opacity:.4">${t('noDesc')}</em>`}</div>
+      <div class="card-foot">
+        <span class="tag tag-cat" style="border-color:${color}30;color:${color}">${catLabel(s.cat)}</span>
+        <span class="lines-label">${s.lines} ${t('line')}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ═══════════════════════════════════════════
+   Detail Panel
+   ═══════════════════════════════════════════ */
+function openDetail(id) {
+  const s = SKILLS.find(sk => sk.id === id);
+  if (!s) return;
+  const color = catColor(s.cat);
+
+  $('detailHead').innerHTML = `
+    <div class="detail-icon" style="color:${color};background:${color}12;border-color:${color}25">${catIcon(s.cat)}</div>
+    <div class="detail-title">
+      <h2>${s.title}</h2>
+      <code>${s.id}</code>
+    </div>
+    <button class="close-detail" onclick="closeDetail()">${t('close')}</button>`;
+
+  let html = `<div class="detail-section">
+    <div class="section-label">${t('description')}</div>
+    <div class="detail-desc">${s.desc || `<em style="opacity:.5">${t('noDesc')}</em>`}</div>
+  </div>`;
+
+  if (s.when) {
+    html += `<div class="detail-section">
+      <div class="section-label">${t('whenToUse')}</div>
+      <div class="when-box">${s.when}</div>
+    </div>`;
+  }
+
+  if (s.sections?.length) {
+    html += `<div class="detail-section">
+      <div class="section-label">${t('sections')}</div>
+      <div class="chips-row">${s.sections.map(sec => `<span class="chip">${sec}</span>`).join('')}</div>
+    </div>`;
+  }
+
+  html += `<div class="detail-section">
+    <div class="section-label">${t('fileInfo')}</div>
+    <div class="meta-grid">
+      <div class="meta-card"><div class="meta-label">${t('lines')}</div><div class="meta-value">${s.lines}</div></div>
+      <div class="meta-card"><div class="meta-label">${t('category')}</div><div class="meta-value" style="color:${color}">${catLabel(s.cat)}</div></div>
+    </div>
+  </div>`;
+
+  html += `<div class="detail-section">
+    <div class="section-label">${t('install')}</div>
+    <div class="install-box" data-skill-id="${s.id}">
+      <button class="copy-btn" onclick="copyCmd('${s.id}')">${t('copy')}</button>
+<span style="color:var(--muted)"># Project-level:</span>
+cp -r skills/${s.id} .agents/skills/
+
+<span style="color:var(--muted)"># User-level (global):</span>
+cp -r skills/${s.id} ~/.claude/skills/
+    </div>
+  </div>`;
+
+  $('detailBody').innerHTML = html;
+  $('detailPanel').classList.add('open');
+}
+
+function copyCmd(id) {
+  navigator.clipboard.writeText(`cp -r skills/${id} .agents/skills/`).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    if (btn) { btn.textContent = t('copied'); setTimeout(() => btn.textContent = t('copy'), 1500); }
+  });
+}
+
+function closeDetail() { $('detailPanel').classList.remove('open'); }
+
+/* ═══════════════════════════════════════════
+   Keyboard Shortcuts
+   ═══════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeDetail();
+  if (e.key === '/' && document.activeElement !== $('searchInput')) {
+    e.preventDefault();
+    $('searchInput').focus();
+  }
+});
+
+/* ═══════════════════════════════════════════
+   Init
+   ═══════════════════════════════════════════ */
+renderSidebar();
+renderSkills();
+</script>
+</body>
+</html>
