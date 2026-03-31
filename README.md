@@ -18,6 +18,9 @@
 ---
 
 ## ✨ Features
+![Uploading Untitled.jpg…]()
+
+![Uploading 2.jpg…]()
 
 - 🌙 **Dark theme** with category-colored accents
 - 🌐 **Bilingual UI** — switch between Arabic and English with one click
