@@ -18,9 +18,11 @@
 ---
 
 ## ✨ Features
-![Uploading Untitled.jpg…]()
+![Untitled](https://github.com/user-attachments/assets/140567a4-8e07-4870-ad9f-077ab1e4dd53)
 
-![Uploading 2.jpg…]()
+
+![2](https://github.com/user-attachments/assets/8b0be87f-2832-4a5c-8d4a-e2a3bf783b79)
+
 
 - 🌙 **Dark theme** with category-colored accents
 - 🌐 **Bilingual UI** — switch between Arabic and English with one click
